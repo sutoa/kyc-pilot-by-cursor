@@ -12,6 +12,7 @@ export default function Home() {
   const [showFileDialog, setShowFileDialog] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [elapsedTime, setElapsedTime] = useState<number | null>(null);
 
   const predefinedPrompts = [
     "Find CSMs for the client",
@@ -23,6 +24,7 @@ export default function Home() {
   const predefinedPromptTemplates: { [key: string]: string } = {
     "Find CSMs for the client": `You are a senior KYC analyst for a major European bank. Your job is to find the list of direct owners and executive officers of the client. 
 - return the result in markdown format
+- display a line above the table below with the company name in bold
 - list of people in a table, including attributes such as Full Name, Title, Ownership Code and Ownership Description. Note that you need to find the description based on the code. For instance, for 'C', the description is '25% but less than 50%'. Also note that for code 'NA', the description is NOT 'Not Applicable'`
   };
 
@@ -91,6 +93,7 @@ export default function Home() {
     }
 
     setIsSubmitting(true);
+    const startTime = Date.now();
 
     try {
       // Combine prompt with file contents
@@ -117,6 +120,7 @@ export default function Home() {
       
       const data = await res.json();
       setResponse(data.response);
+      setElapsedTime((Date.now() - startTime) / 1000); // Convert to seconds
     } catch (error) {
       console.error('Error:', error);
       alert('Failed to process request. Please try again.');
@@ -172,6 +176,7 @@ export default function Home() {
       <div className="flex-1 p-6">
         {/* Prompt Section */}
         <div className="mb-6">
+          <h3 className="text-lg font-semibold mb-2">Prompt Templates</h3>
           <select
             className="w-full p-2 border rounded-md mb-4"
             value={selectedPromptName}
@@ -186,7 +191,7 @@ export default function Home() {
             ))}
           </select>
           <textarea
-            className="w-full p-4 border rounded-md h-32"
+            className="w-full p-4 border rounded-md h-56"
             value={selectedPrompt}
             onChange={(e) => setSelectedPrompt(e.target.value)}
             placeholder="Enter or modify your prompt here..."
@@ -216,7 +221,14 @@ export default function Home() {
         {/* Response Section */}
         {response && (
           <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-semibold mb-4">Response</h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Response</h3>
+              {elapsedTime !== null && (
+                <span className="text-sm text-gray-500">
+                  <strong>Elapsed time:</strong> {elapsedTime.toFixed(2)}s
+                </span>
+              )}
+            </div>
             <div className="prose max-w-none">
               {(() => {
                 try {
