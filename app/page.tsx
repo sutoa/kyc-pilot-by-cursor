@@ -6,6 +6,7 @@ import Logo from './components/Logo';
 
 export default function Home() {
   const [fileContents, setFileContents] = useState<{ [key: string]: string }>({});
+  const [selectedPromptName, setSelectedPromptName] = useState('');
   const [selectedPrompt, setSelectedPrompt] = useState('');
   const [response, setResponse] = useState('');
   const [showFileDialog, setShowFileDialog] = useState(false);
@@ -13,10 +14,17 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const predefinedPrompts = [
+    "Find CSMs for the client",
     "Analyze the content of the provided documents",
     "Extract key information from the files",
     "Summarize the main points",
   ];
+
+  const predefinedPromptTemplates: { [key: string]: string } = {
+    "Find CSMs for the client": `You are a senior KYC analyst for a major European bank. Your job is to find the list of direct owners and executive officers of the client. 
+- return the result in markdown format
+- list of people in a table, including attributes such as Full Name, Title, Ownership Code and Ownership Description. Note that you need to find the description based on the code. For instance, for 'C', the description is '25% but less than 50%'. Also note that for code 'NA', the description is NOT 'Not Applicable'`
+  };
 
   const handleFileSelect = async (files: FileList) => {
     console.log('Processing files...');
@@ -63,6 +71,12 @@ export default function Home() {
     const newContents = { ...fileContents };
     delete newContents[filename];
     setFileContents(newContents);
+  };
+
+  const handlePromptSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = e.target.value;
+    setSelectedPromptName(selectedValue);
+    setSelectedPrompt(predefinedPromptTemplates[selectedValue] || selectedValue);
   };
 
   const handleSubmit = async () => {
@@ -160,8 +174,8 @@ export default function Home() {
         <div className="mb-6">
           <select
             className="w-full p-2 border rounded-md mb-4"
-            value={selectedPrompt}
-            onChange={(e) => setSelectedPrompt(e.target.value)}
+            value={selectedPromptName}
+            onChange={handlePromptSelect}
             disabled={isSubmitting}
           >
             <option value="">Select a prompt template...</option>
