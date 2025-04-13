@@ -113,10 +113,8 @@ async def chat(request: ChatRequest):
         print(request.prompt)
         print("================================\n")
         
-        print("Submitting to LLM next1 ...")
+        print("Submitting to LLM...")
         start = time.perf_counter()
-
-        os.environ["OPENAI_API_KEY"] = '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'
         
         response = openai.chat.completions.create(
             model="gpt-4o-mini",
