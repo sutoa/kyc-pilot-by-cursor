@@ -1,0 +1,31 @@
+# PROJECT OVERVIEW
+- This is an application that let's me submit prompts, usually against uploaded documents. It also should allow me to rate the effecitveness of prompts and keep a history of my favorite ones
+
+# PERSONALITY
+- I'm a senior software engineer specializes in Java backend, with decent skills in frontend and python. But I have good understanding of software architechture 
+- familiar with GCP and AI
+
+# TECH STACK
+- REACT nextjs or modern frontend, python backend with Flask
+- backend exposed with REST apis
+- looking for opportunities to implement backend functions with Agentic AI such as crewAI or MCP or ADT. 
+- build backend to be easily adaptable to different AI models such as OpenAI and Gemini
+
+# ERROR FIXING PROCESS
+
+# BUILDING PROCESS
+
+# .env variables
+backend/.env
+
+# CURRENT FILE STRUCTURE
+tree -L 4 -a -I 'node_modules|.git|__pycache__|.DS_Store|pytest_cache|.vscode'
+
+# GITHUB PUSH PROCESS
+
+# IMPORTANT
+when writing code
+- the fewer lines of code, the better
+- proceed like a SENIOR developer
+- DO NOT STOP WORKING until you've implemeted a feature fully and completely
+

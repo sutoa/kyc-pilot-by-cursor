@@ -82,11 +82,6 @@ export default function Home() {
   };
 
   const handleSubmit = async () => {
-    if (Object.keys(fileContents).length === 0) {
-      alert('Please select at least one file');
-      return;
-    }
-
     if (!selectedPrompt) {
       alert('Please enter or select a prompt');
       return;
@@ -96,13 +91,15 @@ export default function Home() {
     const startTime = Date.now();
 
     try {
-      // Combine prompt with file contents
+      // Combine prompt with file contents if any exist
       let contextText = '';
-      Object.entries(fileContents).forEach(([filename, content]) => {
-        contextText += `\n\nFile ${filename} content:\n${content}`;
-      });
+      if (Object.keys(fileContents).length > 0) {
+        Object.entries(fileContents).forEach(([filename, content]) => {
+          contextText += `\n\nFile ${filename} content:\n${content}`;
+        });
+      }
 
-      const fullPrompt = `${selectedPrompt}\n\nBelow is the context, please do not make up values if you cannot find any answers. Just say 'not found'.${contextText}`;
+      const fullPrompt = `${selectedPrompt}${contextText ? `\n\nBelow is the context, please do not make up values if you cannot find any answers. Just say 'not found'.${contextText}` : ''}`;
 
       const res = await fetch('http://localhost:8001/api/chat', {
         method: 'POST',
