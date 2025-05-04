@@ -127,148 +127,190 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen bg-gray-50">
-      {/* Left Sidebar - File List */}
-      <div className="w-64 bg-gray-50 border-r border-gray-200 p-4">
-        <Logo />
-        <div className="mt-24">
-          <button
-            onClick={() => setShowFileDialog(true)}
-            disabled={isUploading}
-            className={`w-full mb-2 px-4 py-2 text-sm text-white rounded-md ${
-              isUploading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-            }`}
-          >
-            {isUploading ? (
-              <span className="flex items-center justify-center">
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Uploading...
-              </span>
-            ) : (
-              'Add Files'
-            )}
-          </button>
+    <div className="min-h-screen bg-gray-100">
+      {/* Logo and Main Content */}
+      <div className="px-4">
+        {/* Logo */}
+        <div className="h-28 flex items-center">
+          <Logo />
         </div>
-        <div className="mt-4 space-y-2">
-          {Object.keys(fileContents).map((filename) => (
-            <div key={filename} className="flex items-center justify-between p-2 hover:bg-gray-100 rounded group">
-              <span className="truncate text-sm" title={filename}>
-                {filename}
-              </span>
+
+        {/* Main Content */}
+        <div className="flex gap-4 h-[calc(100vh-12rem)]">
+          {/* Left Sidebar - File List */}
+          <div className="w-64 bg-white rounded-xl shadow-sm flex flex-col">
+            {/* Header */}
+            <div className="border-b border-gray-200 p-4 rounded-t-xl">
+              <h1 className="text-xl font-semibold">KYC Data Source</h1>
+            </div>
+
+            <div className="p-4 flex-1 overflow-y-auto">
               <button
-                onClick={() => handleRemoveFile(filename)}
-                className="invisible group-hover:visible text-red-500 hover:text-red-700"
+                onClick={() => setShowFileDialog(true)}
+                disabled={isUploading}
+                className={`w-full px-4 py-2 text-sm text-white rounded-md ${
+                  isUploading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                }`}
               >
-                ×
+                {isUploading ? (
+                  <span className="flex items-center justify-center">
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Uploading...
+                  </span>
+                ) : (
+                  'Add Files'
+                )}
               </button>
-            </div>
-          ))}
-        </div>
-      </div>
+              
+              <div className="flex items-center mt-6 mb-4">
+                <input type="checkbox" className="mr-2" />
+                <span className="text-sm text-gray-600">Select all sources</span>
+              </div>
 
-      {/* Main Content */}
-      <div className="flex-1 p-6">
-        {/* Prompt Section */}
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-2">Prompt Templates</h3>
-          <select
-            className="w-full p-2 border rounded-md mb-4"
-            value={selectedPromptName}
-            onChange={handlePromptSelect}
-            disabled={isSubmitting}
-          >
-            <option value="">Select a prompt template...</option>
-            {predefinedPrompts.map((prompt, index) => (
-              <option key={index} value={prompt}>
-                {prompt}
-              </option>
-            ))}
-          </select>
-          <textarea
-            className="w-full p-4 border rounded-md h-56"
-            value={selectedPrompt}
-            onChange={(e) => setSelectedPrompt(e.target.value)}
-            placeholder="Enter or modify your prompt here..."
-            disabled={isSubmitting}
-          />
-          <button
-            onClick={handleSubmit}
-            disabled={isUploading || isSubmitting}
-            className={`mt-4 px-6 py-2 text-white rounded-md flex items-center justify-center ${
-              isUploading || isSubmitting ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-            }`}
-          >
-            {isSubmitting ? (
-              <>
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Processing...
-              </>
-            ) : (
-              'Submit'
-            )}
-          </button>
-        </div>
-
-        {/* Response Section */}
-        {response && (
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Response</h3>
-              {elapsedTime !== null && (
-                <span className="text-sm text-gray-500">
-                  <strong>Elapsed time:</strong> {elapsedTime.toFixed(2)}s
-                </span>
-              )}
-            </div>
-            <div className="prose max-w-none">
-              {(() => {
-                try {
-                  // Try to parse as JSON first
-                  const jsonData = JSON.parse(response);
-                  return (
-                    <pre className="bg-gray-50 p-4 rounded-md overflow-auto">
-                      <code className="text-sm">
-                        {JSON.stringify(jsonData, null, 2)}
-                      </code>
-                    </pre>
-                  );
-                } catch (e) {
-                  // If not JSON, check if it's a table (contains | and -)
-                  if (response.includes('|') && response.includes('-')) {
-                    return (
-                      <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                          {response.split('\n').map((row, i) => (
-                            <tr key={i} className={i === 0 ? 'bg-gray-50' : 'bg-white'}>
-                              {row.split('|').map((cell, j) => (
-                                <td key={j} className="px-6 py-4 whitespace-nowrap text-sm">
-                                  {cell.trim()}
-                                </td>
-                              ))}
-                            </tr>
-                          ))}
-                        </table>
-                      </div>
-                    );
-                  }
-                  // If neither JSON nor table, display as plain text
-                  return <div className="whitespace-pre-wrap">{response}</div>;
-                }
-              })()}
+              <div className="space-y-2">
+                {Object.keys(fileContents).map((filename) => (
+                  <div key={filename} className="flex items-center justify-between p-2 hover:bg-gray-100 rounded group">
+                    <div className="flex items-center">
+                      <input type="checkbox" className="mr-2" checked />
+                      <span className="truncate text-sm" title={filename}>
+                        {filename}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => handleRemoveFile(filename)}
+                      className="invisible group-hover:visible text-red-500 hover:text-red-700"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        )}
+
+          {/* Middle Panel - Chat Interface */}
+          <div className="flex-1 flex flex-col bg-white rounded-xl shadow-sm">
+            {/* Header */}
+            <div className="border-b border-gray-200 p-4 rounded-t-xl">
+              <h1 className="text-xl font-semibold">Chat</h1>
+            </div>
+
+            {/* Chat Content Area */}
+            <div className="flex-1 overflow-y-auto p-4">
+              {response && (
+                <div className="bg-white rounded-lg mb-4">
+                  {elapsedTime !== null && (
+                    <div className="text-sm text-gray-500 text-right mb-2">
+                      Elapsed time: {elapsedTime.toFixed(2)}s
+                    </div>
+                  )}
+                  <div className="prose max-w-none">
+                    {(() => {
+                      try {
+                        const jsonData = JSON.parse(response);
+                        return (
+                          <pre className="bg-gray-50 p-4 rounded-md overflow-auto">
+                            <code className="text-sm">
+                              {JSON.stringify(jsonData, null, 2)}
+                            </code>
+                          </pre>
+                        );
+                      } catch (e) {
+                        if (response.includes('|') && response.includes('-')) {
+                          return (
+                            <div className="overflow-x-auto">
+                              <table className="min-w-full divide-y divide-gray-200">
+                                {response.split('\n').map((row, i) => (
+                                  <tr key={i} className={i === 0 ? 'bg-gray-50' : 'bg-white'}>
+                                    {row.split('|').map((cell, j) => (
+                                      <td key={j} className="px-6 py-4 whitespace-nowrap text-sm">
+                                        {cell.trim()}
+                                      </td>
+                                    ))}
+                                  </tr>
+                                ))}
+                              </table>
+                            </div>
+                          );
+                        }
+                        return <div className="whitespace-pre-wrap">{response}</div>;
+                      }
+                    })()}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Input Area */}
+            <div className="border-t border-gray-200 p-4 rounded-b-xl mt-auto">
+              <div className="flex flex-col space-y-4">
+                <select
+                  className="w-full p-2 border rounded-md text-sm"
+                  value={selectedPromptName}
+                  onChange={handlePromptSelect}
+                  disabled={isSubmitting}
+                >
+                  <option value="">Select a prompt template...</option>
+                  {predefinedPrompts.map((prompt, index) => (
+                    <option key={index} value={prompt}>
+                      {prompt}
+                    </option>
+                  ))}
+                </select>
+                
+                <div className="relative">
+                  <textarea
+                    className="w-full p-4 pr-12 border rounded-md text-sm min-h-[100px] resize-none"
+                    value={selectedPrompt}
+                    onChange={(e) => setSelectedPrompt(e.target.value)}
+                    placeholder="Start typing..."
+                    disabled={isSubmitting}
+                  />
+                  <button
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                    className="absolute right-2 bottom-2 p-2 text-blue-600 hover:text-blue-700 disabled:text-gray-400"
+                  >
+                    {isSubmitting ? (
+                      <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    ) : (
+                      <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round" 
+                          strokeWidth={2} 
+                          d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"
+                        />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Panel - Studio */}
+          <div className="w-80 bg-white rounded-xl shadow-sm flex flex-col">
+            {/* Header */}
+            <div className="border-b border-gray-200 p-4 rounded-t-xl">
+              <h1 className="text-xl font-semibold">Studio</h1>
+            </div>
+            <div className="p-4 flex-1 overflow-y-auto">
+              {/* Placeholder for future content */}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* File Selection Dialog */}
       {showFileDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Select Files</h3>
@@ -284,6 +326,6 @@ export default function Home() {
           </div>
         </div>
       )}
-    </main>
+    </div>
   );
 }
